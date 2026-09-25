@@ -1,0 +1,39 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #1e1e1e; color: #cfcfcf; font: 12px/1.45 "SF Pro Text", -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.wrap { padding: 10px 12px 14px; }
+.app-head { margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+.app-head h1 { font-size: 16px; color: #fff; letter-spacing: .2px; }
+.app-head .sub { color: #888; font-size: 11px; }
+.card { background: #262626; border: 1px solid #333; border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+.card-title { font-size: 12px; color: #fff; margin-bottom: 8px; font-weight: 600; }
+.btn {
+  display: block; width: 100%; padding: 8px 10px; margin-bottom: 8px;
+  background: #3a3a3a; color: #eee; border: 1px solid #4a4a4a; border-radius: 4px;
+  cursor: pointer; font-size: 12px; text-align: center;
+}
+.btn:hover { background: #454545; }
+.btn.primary { background: #2d7ff9; border-color: #2d7ff9; color: #fff; font-weight: 600; }
+.btn.primary:hover { background: #3a8bff; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.lbl { color: #aaa; min-width: 90px; }
+.sel { flex: 1; background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 4px; padding: 6px; }
+.hint { color: #9d9d9d; font-size: 11px; margin-top: 6px; }
+.hint.ok { color: #8fd08a; }
+.hint.err { color: #f08a8a; }
+.hidden { display: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.chip { background: #333; border: 1px solid #4a4a4a; border-radius: 10px; padding: 2px 8px; font-size: 11px; color: #d0d0d0; }
+.tiny { color: #8a8a8a; font-size: 11px; margin: 6px 0 2px; }
+.note { margin-top: 6px; }
+#mapping .mrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+#mapping .mrow .colname { flex: 1; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+#mapping .mrow select { flex: 1.2; background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 4px; padding: 5px; }
+#mapping .mrow .pos { color: #777; font-size: 10px; width: 64px; }
+.log {
+  margin-top: 8px; background: #161616; border: 1px solid #333; border-radius: 5px;
+  max-height: 120px; overflow: auto; padding: 8px; font-family: Menlo, Consolas, monospace; font-size: 11px; color: #b9b9b9; white-space: pre-wrap;
+}
+.logline { margin: 2px 0; }
+.logline.err { color: #f08a8a; }
+.logline.ok { color: #8fd08a; }

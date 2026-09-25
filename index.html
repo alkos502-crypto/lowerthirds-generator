@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lower Thirds Generator</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-head">
+      <h1>Нижние трети</h1>
+      <span class="sub">из CSV в MOGRT</span>
+    </header>
+
+    <section class="card">
+      <h2 class="card-title">1 · CSV-данные</h2>
+      <button id="btnCsv" class="btn">Выбрать CSV-файл</button>
+      <input type="file" id="csvFile" accept=".csv,.txt,.tsv" style="display:none" />
+      <div id="csvInfo" class="hint hidden"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="card-title">2 · МОGRT-шаблон</h2>
+      <div class="row">
+        <label class="lbl" for="trackSel">Видео-трек</label>
+        <select id="trackSel" class="sel"></select>
+      </div>
+      <div class="tiny" id="mogrtPath"></div>
+      <button id="btnMogrt" class="btn">Считать поля шаблона</button>
+      <div id="mogrtInfo" class="hint hidden"></div>
+      <div id="paramChips" class="chips"></div>
+    </section>
+
+    <section class="card" id="mapCard" style="display:none">
+      <h2 class="card-title">3 · Сопоставление полей</h2>
+      <p class="tiny">Колонке CSV назначьте параметр шаблона (виден во вкладке «Редактировать» Essential Graphics).</p>
+      <div id="mapping"></div>
+    </section>
+
+    <div style="padding:10px 14px">
+      <div class="row">
+        <label class="lbl" for="durSec">Длина титра, сек</label>
+        <input id="durSec" class="sel" type="number" min="1" step="1" value="5" />
+      </div>
+      <button id="btnCreate" class="btn primary" disabled>Создать нижние трети</button>
+      <div class="tiny note">Титры выкладываются на выбранный трек, стык в стык, от точки воспроизведения.</div>
+    </div>
+
+    <div id="log" class="log"></div>
+  </div>
+
+  <script src="js/index.js"></script>
+</body>
+</html>
