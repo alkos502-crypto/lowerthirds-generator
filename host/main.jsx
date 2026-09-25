@@ -274,26 +274,31 @@ function setMGTText(item, map) {
     }
 }
 
-function createTitles(mappingArrayStr, trackIndexJson, durationSecJson) {
+function createTitles(mappingArrayStr, trackIndexJson, durationSecJson, pathJson) {
     try {
         var rows = _JParse(mappingArrayStr);
         var seq = app.project ? app.project.activeSequence : null;
         if (!seq) return Out({ ok: false, error: "Нет активной последовательности." });
-        if (!gMogrtPath) return Out({ ok: false, error: "Сначала выберите MOGRT шаблон кнопкой «Шаг 2»." });
-        var fchk = new File(gMogrtPath);
-        if (!fchk.exists) return Out({ ok: false, error: "MOGRT-файл больше не найден:\n" + gMogrtPath });
+        var fpath = "";
+        try { var pv = _JParse(String(pathJson)); if (typeof pv === "string" && pv !== "") fpath = pv; } catch (e) {}
+        if (fpath === "") { var fb = new File(DEFAULT_MOGRT_PATH); if (fb.exists) fpath = DEFAULT_MOGRT_PATH; }
+        if (fpath === "") return Out({ ok: false, error: "Не задан путь к MOGRT (config.json)." });
+        var fchk = new File(fpath);
+        if (!fchk.exists) return Out({ ok: false, error: "MOGRT-файл не найден:\n" + fpath });
+        gMogrtPath = fpath;
         var ti = parseInt(trackIndexJson, 10);
-        if (isNaN(ti) || ti < 0) ti = (gTrack >= 0) ? gTrack : 1;
+        if (isNaN(ti) || ti < 0) ti = (gTrack >= 0) ? gTrack : 2;
         var durSec = parseFloat(_JParse(String(durationSecJson))) || 0;
-        if (durSec <= 0) durSec = 5;
+        if (durSec <= 0) durSec = 7;
         var stepSec = durSec;
 
-        // Получаем ProjectItem шаблона (импортированный клип-заготовку затем перезапишем первым титром)
-        var intro = seq.importMGT(gMogrtPath, gStartTicks, ti, 0);
+        // Старт от текущей позиции курсора (плейхед). Регистрируем шаблон в бине, берём ProjectItem.
+        var startTicks = seq.getPlayerPosition().ticks;
+        var intro = seq.importMGT(fpath, startTicks, ti, 0);
         if (!intro) return Out({ ok: false, error: "Не удалось импортировать MOGRT-шаблон в секвенс." });
         var pItem = intro.projectItem;
 
-        var startSec = gStartTicks / TPS;
+        var startSec = startTicks / TPS;
         var created = 0, errors = [];
         for (var r = 0; r < rows.length; r++) {
             var slotSec = startSec + r * stepSec;

@@ -17,13 +17,13 @@
 
   var $ = function (id) { return document.getElementById(id); };
 
+  // Фиксированный видео-трек для титров (V3 = Video 3, индекс 2)
+  var TRACK = 2;
+
   var state = {
     headers: [],
     rows: [],
-    params: [],
-    paramWarning: "",
-    mogrtPath: "",
-    selected: [] // для каждой колонки выбранный параметр
+    mogrtPath: ""
   };
 
   function log(msg, kind) {
@@ -61,78 +61,37 @@
     });
   }
 
-  function refreshTracks(selectTrack) {
+function refreshTracks() {
     run("listTracksAndSeq()", function (d) {
       if (!d.ok) { show("mogrtInfo", d.error || "Ошибка", "err"); return; }
       if (!d.seq) {
         show("mogrtInfo", d.error || "Нет последовательности", "err");
         return;
       }
-      var sel = $("trackSel");
-      sel.innerHTML = "";
-      d.tracks.forEach(function (t) {
-        var o = document.createElement("option");
-        o.value = t.index;
-        o.textContent = t.label;
-        sel.appendChild(o);
-      });
-      if (selectTrack !== undefined) sel.value = selectTrack;
     });
   }
 
-  function buildMapping() {
-    var map = $("mapping");
-    map.innerHTML = "";
-    var fields = state.headers;
-    state.selected = [];
-    if (state.params.length === 0) {
-      // ручной ввод имени параметра, т.к. перечислить не удалось
-      fields.forEach(function (h, idx) {
-        var row = document.createElement("div");
-        row.className = "mrow";
-        var left = document.createElement("div"); left.className = "colname"; left.textContent = h;
-        var inp = document.createElement("input");
-        inp.type = "text"; inp.placeholder = "имя параметра в MOGRT"; inp.className = "sel";
-        inp.value = (state.params.indexOf(h) >= 0) ? h : "";
-        inp.setAttribute("data-i", idx);
-        var pos = document.createElement("div"); pos.className = "pos";
-        row.appendChild(left); row.appendChild(inp); row.appendChild(pos);
-        map.appendChild(row);
-        state.selected[idx] = "";
-      });
-    } else {
-      fields.forEach(function (h, idx) {
-        var row = document.createElement("div");
-        row.className = "mrow";
-        var left = document.createElement("div"); left.className = "colname"; left.textContent = h;
-        var sel = document.createElement("select");
-        var opt0 = document.createElement("option"); opt0.value = ""; opt0.textContent = "— не заполнять —";
-        sel.appendChild(opt0);
-        var auto = state.params.indexOf(h) >= 0 ? h : "";
-        state.params.forEach(function (p) {
-          var o = document.createElement("option");
-          o.value = p; o.textContent = p;
-          sel.appendChild(o);
-        });
-        sel.value = auto;
-        sel.setAttribute("data-i", idx);
-        var pos = document.createElement("div"); pos.className = "pos";
-        row.appendChild(left); row.appendChild(sel); row.appendChild(pos);
-        map.appendChild(row);
-        state.selected[idx] = auto;
-      });
+  // Позиция колонки в CSV по названию (точное совпадение, затем по подстроке)
+  function colIndexOf(kind) {
+    for (var i = 0; i < state.headers.length; i++) {
+      if (String(state.headers[i] || "").trim().toLowerCase() === kind) return i;
     }
-    $("mapCard").style.display = "block";
+    for (var j = 0; j < state.headers.length; j++) {
+      if (String(state.headers[j] || "").trim().toLowerCase().indexOf(kind) !== -1) return j;
+    }
+    return -1;
   }
-
-  function collectMapping() {
-    var out = [];
-    var rows = $("mapping").querySelectorAll(".mrow");
-    for (var i = 0; i < rows.length; i++) {
-      var cell = rows[i].querySelector("select, input");
-      out.push(cell ? cell.value : "");
+  // Позиция колонки по любому из допустимых названий
+  function colIndexByNames(names) {
+    for (var a = 0; a < state.headers.length; a++) {
+      var h = String(state.headers[a] || "").trim().toLowerCase();
+      for (var b = 0; b < names.length; b++) if (h === names[b]) return a;
     }
-    state.selected = out;
+    for (var c = 0; c < state.headers.length; c++) {
+      var hc = String(state.headers[c] || "").trim().toLowerCase();
+      for (var d = 0; d < names.length; d++) if (hc.indexOf(names[d]) !== -1) return c;
+    }
+    return -1;
   }
 
   function loadConfig() {
@@ -169,7 +128,6 @@
       state.rows = parsed.slice(1);
       show("csvInfo", "Файл загружен: " + state.rows.length + " строк(и). Колонки: " + state.headers.join(" · "), "ok");
       log("CSV: " + state.rows.length + " строк(и), колонок: " + state.headers.length, "ok");
-      if (state.params.length) buildMapping();
       tryEnable();
     };
     reader.readAsText(file, "utf-8");
@@ -206,42 +164,11 @@
     return rows;
   }
 
-  // ---------- шаг 2: MOGRT ----------
-  $("btnMogrt").addEventListener("click", function () {
-    refreshTracks();
-    var track = $("trackSel").value;
-    var pathArg = jsArg(JSON.stringify(state.mogrtPath || ""));
-    run("loadMogrt(" + track + ", " + pathArg + ")", function (d) {
-      if (!d.ok) { show("mogrtInfo", d.error, "err"); return; }
-      state.params = d.params || [];
-      state.paramWarning = d.paramWarning || "";
-      show("mogrtInfo", "Шаблон загружен. Параметры: " + (state.params.length ? state.params.join(" · ") : "не найдены"), "ok");
-      var chips = $("paramChips"); chips.innerHTML = "";
-      state.params.forEach(function (p) {
-        var c = document.createElement("span"); c.className = "chip"; c.textContent = p;
-        chips.appendChild(c);
-      });
-      if (state.params.length === 0 && state.paramWarning) {
-        var w = document.createElement("div");
-        w.className = "hint err"; w.style.marginTop = "6px"; w.textContent = state.paramWarning;
-        chips.appendChild(w);
-      }
-      if (d.tracks) {
-        var sel = $("trackSel"); sel.innerHTML = "";
-        d.tracks.forEach(function (t) {
-          var o = document.createElement("option"); o.value = t.index; o.textContent = t.label;
-          sel.appendChild(o);
-        });
-        if (d.usedTrack !== undefined) sel.value = d.usedTrack;
-      }
-      if (state.headers.length) buildMapping();
-      tryEnable();
-    });
-  });
-
-  // ---------- шаг 3: создание ----------
+  // ---------- создание ----------
   $("btnCreate").addEventListener("click", function () {
-    collectMapping();
+    refreshTracks();
+    var iFio = colIndexByNames(["фио", "имя фамилия", "имя", "фамилия"]);
+    var iDolz = colIndexOf("должность");
     var maps = [];
     var skipped = 0;
     var anyRow = false;
@@ -252,20 +179,23 @@
       }
       if (rowEmpty) { skipped++; return; }
       var m = {};
-      for (var i = 0; i < state.selected.length; i++) {
-        var param = state.selected[i];
-        var val = (rowVals[i] !== undefined) ? String(rowVals[i]) : "";
-        if (param && val !== "") m[param] = val;
+      if (iFio >= 0) {
+        var v = rowVals[iFio];
+        if (v !== undefined && String(v).trim() !== "") m["Имя Фамилия"] = String(v);
+      }
+      if (iDolz >= 0) {
+        var v2 = rowVals[iDolz];
+        if (v2 !== undefined && String(v2).trim() !== "") m["Должность"] = String(v2);
       }
       anyRow = true;
       maps.push(m);
     });
     if (!anyRow) { log("Нет заполненных строк для создания.", "err"); return; }
     if (skipped > 0) log("Пропущено пустых строк: " + skipped + ".");
-    var track = $("trackSel").value;
-    var durArg = jsArg(JSON.stringify(String($("durSec").value || "").trim()));
-    log("Создаю " + maps.length + " титров на треке V" + (parseInt(track, 10) + 1) + "…");
-    run("createTitles(" + jsArg(JSON.stringify(maps)) + ", " + track + ", " + durArg + ")", function (d) {
+    var track = TRACK;
+    var pathArg = jsArg(JSON.stringify(state.mogrtPath || ""));
+    log("Создаю " + maps.length + " титров на Video 3 (по 7 сек)…");
+    run("createTitles(" + jsArg(JSON.stringify(maps)) + ", " + track + ", 7, " + pathArg + ")", function (d) {
       if (!d.ok) { log(d.error, "err"); return; }
       if (d.errors && d.errors.length) d.errors.forEach(function (e) { log(e, "err"); });
       if (d.step) log("Шаг расстановки: " + d.step.toFixed(2) + " сек на титр.");
@@ -278,7 +208,7 @@
   });
 
   function tryEnable() {
-    var ok = state.headers.length > 0 && state.params.length > 0;
+    var ok = state.headers.length > 0;
     $("btnCreate").disabled = !ok;
   }
 
