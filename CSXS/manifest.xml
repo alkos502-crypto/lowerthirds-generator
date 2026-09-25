@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ExtensionManifest
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  ExtensionBundleId="com.mytool.lowerthirds"
+  ExtensionBundleVersion="1.0.0"
+  Version="12.0">
+  <ExtensionList>
+    <Extension Id="com.mytool.lowerthirds.panel" Version="1.0.0" />
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList>
+      <Host Name="PPRO" Version="25.0" />
+      <Host Name="PPRO" Version="26.0" />
+    </HostList>
+    <LocaleList>
+      <Locale Code="All" />
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="12.0" />
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    <Extension Id="com.mytool.lowerthirds.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./client/index.html</MainPath>
+          <ScriptPath>./hostscript.jsx</ScriptPath>
+        </Resources>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>Lower Thirds Generator</Menu>
+          <Geometry>
+            <Size>
+              <Width>380</Width>
+              <Height>520</Height>
+            </Size>
+            <MinSize>
+              <Width>360</Width>
+              <Height>420</Height>
+            </MinSize>
+          </Geometry>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>

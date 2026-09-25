@@ -1,0 +1,136 @@
+/* Lower Thirds Generator — Panel Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color: #ddd;
+  background: #2d2d2d;
+  height: 100%;
+  overflow-x: hidden;
+}
+#app { padding: 12px; }
+h2 { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #fff; text-align: center; }
+h3 { font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #9cf; }
+.card {
+  background: #383838;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid #4a4a4a;
+}
+.field-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+.field-row label { font-size: 12px; color: #aaa; min-width: 50px; }
+input[type="text"] {
+  flex: 1;
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #ddd;
+  padding: 5px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+input[type="number"] {
+  width: 60px;
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #ddd;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+button {
+  background: #4a4a4a;
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: #ddd;
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+button:hover { background: #5a5a5a; }
+button.primary {
+  background: #0a7ad0;
+  border-color: #0a8ae0;
+  color: #fff;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+button.primary:hover { background: #0a8ae0; }
+button.primary:disabled { background: #555; border-color: #555; color: #888; cursor: not-allowed; }
+button.secondary { background: #3a5a7a; border-color: #4a6a8a; }
+.hint { font-size: 11px; color: #999; margin-bottom: 6px; }
+
+.param-list {
+  margin-top: 6px;
+  font-size: 11px;
+  background: #1e1e1e;
+  border-radius: 4px;
+  padding: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+  display: none;
+}
+.param-list.show { display: block; }
+.param-item { padding: 2px 4px; color: #8cf; }
+
+table#previewTable {
+  width: 100%;
+  font-size: 11px;
+  border-collapse: collapse;
+  margin-top: 6px;
+  display: none;
+}
+table#previewTable.show { display: table; }
+#previewTable th {
+  background: #444;
+  color: #9cf;
+  padding: 3px 6px;
+  text-align: left;
+  font-weight: 500;
+  border: 1px solid #555;
+}
+#previewTable td {
+  padding: 3px 6px;
+  border: 1px solid #444;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stats { font-size: 11px; color: #aaa; margin-top: 4px; }
+
+#mappingContainer { margin-top: 6px; }
+.mapping-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.mapping-row .col-name { width: 100px; color: #ddd; font-weight: 500; }
+.mapping-row select {
+  flex: 1;
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #ddd;
+  padding: 3px 6px;
+  font-size: 12px;
+}
+
+.status {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: none;
+}
+.status.show { display: block; }
+.status.info { background: #1a3a5a; color: #9cf; }
+.status.success { background: #1a4a2a; color: #6c6; }
+.status.error { background: #4a1a1a; color: #c66; }
+.status.progress { background: #3a3a1a; color: #cc6; }

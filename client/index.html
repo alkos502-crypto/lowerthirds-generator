@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lower Thirds Generator</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <h2>Lower Thirds Generator</h2>
+
+    <!-- Step 1: MOGRT Selection -->
+    <section class="card">
+      <h3>1. MOGRT Template</h3>
+      <div class="field-row">
+        <input type="text" id="mogrtPath" placeholder="Path to .mogrt file..." readonly>
+        <button id="btnBrowseMogrt">Browse</button>
+      </div>
+      <button id="btnInspect" class="secondary">Inspect Params</button>
+      <div id="paramList" class="param-list"></div>
+    </section>
+
+    <!-- Step 2: Data Table -->
+    <section class="card">
+      <h3>2. Data Source</h3>
+      <div class="field-row">
+        <input type="text" id="csvPath" placeholder="Path to .xlsx / .csv file..." readonly>
+        <button id="btnBrowseCsv">Browse</button>
+      </div>
+      <table id="previewTable">
+        <thead><tr id="previewHeader"></tr></thead>
+        <tbody id="previewBody"></tbody>
+      </table>
+      <div class="stats" id="rowCount"></div>
+    </section>
+
+    <!-- Step 3: Column Mapping -->
+    <section class="card">
+      <h3>3. Column Mapping</h3>
+      <p class="hint">Map data columns → MOGRT parameter names</p>
+      <div id="mappingContainer"></div>
+    </section>
+
+    <!-- Step 4: Options -->
+    <section class="card">
+      <h3>4. Options</h3>
+      <div class="field-row">
+        <label>Track:</label>
+        <input type="number" id="trackIndex" value="3" min="1" max="99">
+        <label>Duration (s):</label>
+        <input type="number" id="durationSec" value="5" min="1" max="600">
+        <label>Gap (s):</label>
+        <input type="number" id="gapSec" value="2" min="0" max="600">
+      </div>
+    </section>
+
+    <!-- Step 5: Generate -->
+    <section class="card">
+      <button id="btnGenerate" class="primary" disabled>Generate Lower Thirds</button>
+      <div id="status" class="status"></div>
+    </section>
+  </div>
+
+  <!-- Libraries -->
+  <script src="js/xlsx.full.min.js"></script>
+  <script src="js/CSInterface.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
