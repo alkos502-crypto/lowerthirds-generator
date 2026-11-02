@@ -165,13 +165,19 @@ function refreshTracks() {
   }
 
   // ---------- выбор MOGRT-шаблона ----------
-  $("btnMogrt").addEventListener("click", function () {
-    run("pickMogrt()", function (d) {
-      if (!d.ok) { if (d.canceled) return; show("mogrtInfo", d.error || "Ошибка", "err"); return; }
-      state.mogrtPath = d.path;
-      showMogrtPath();
-      log("Шаблон выбран: " + pathBase(d.path), "ok");
-    });
+  $("btnMogrt").addEventListener("click", function () { $("mogrtFile").click(); });
+
+  $("mogrtFile").addEventListener("change", function (e) {
+    var file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    // В CEP/CEF у выбранного File есть .path (абсолютный путь). FileReader тут не даёт путь,
+    // поэтому берём пути напрямую: file.path / file.nativePath / file.systemPath.
+    var p = String(file.path || file.nativePath || file.systemPath || "").trim();
+    if (!p) { show("mogrtInfo", "Не удалось получить путь к шаблону (нет путей File в этом CEP).", "err"); return; }
+    state.mogrtPath = p;
+    showMogrtPath();
+    log("Шаблон выбран: " + p, "ok");
   });
 
   function pathBase(p) {
