@@ -164,6 +164,21 @@ function refreshTracks() {
     return rows;
   }
 
+  // ---------- выбор MOGRT-шаблона ----------
+  $("btnMogrt").addEventListener("click", function () {
+    run("pickMogrt()", function (d) {
+      if (!d.ok) { if (d.canceled) return; show("mogrtInfo", d.error || "Ошибка", "err"); return; }
+      state.mogrtPath = d.path;
+      showMogrtPath();
+      log("Шаблон выбран: " + pathBase(d.path), "ok");
+    });
+  });
+
+  function pathBase(p) {
+    var s = String(p || "").split("/");
+    return s[s.length - 1] || p;
+  }
+
   // ---------- создание ----------
   $("btnCreate").addEventListener("click", function () {
     refreshTracks();

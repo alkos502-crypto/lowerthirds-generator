@@ -149,6 +149,15 @@ function getDefaultMogrtPath() {
     return Out({ path: DEFAULT_MOGRT_PATH });
 }
 
+// Диалог выбора MOGRT-шаблона пользователем (возвращает путь, без чтения файла)
+function pickMogrt() {
+    try {
+        var f = new File.openDialog("Выберите MOGRT-шаблон", "*.mogrt", false);
+        if (!f) return Out({ ok: false, canceled: true, error: "Отменено" });
+        return Out({ ok: true, path: f.fsName });
+    } catch (e) { return Out({ ok: false, error: String(e) }); }
+}
+
 function listTracksAndSeq() {
     try {
         if (!app.project) return Out({ ok: true, seq: false, error: "Нет открытого проекта." });
